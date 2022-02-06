@@ -9,6 +9,9 @@ const app = Vue.createApp({
       hour: new Date().getHours(),
       minute: new Date().getMinutes(),
       darkMode: false,
+      interval: null,
+      time: null,
+      events: [],
     };
   },
   watch: {
@@ -127,6 +130,28 @@ const app = Vue.createApp({
     },
   },
   methods: {
+    createEvent() {
+      var event = {
+        key: new Date().toString(),
+        title: "",
+        startDate: {},
+        endDate: {},
+        startTime: {},
+        endTime: {},
+        description: "",
+      };
+      this.events = [event, ...this.events];
+      createEvent(event)
+    },
+    updateEvent(key, event) {
+      this.events = this.events.map((ev) => {
+        if (this.ev.key == key) return event;
+        else return ev;
+      });
+    },
+    deleteEvent(key) {
+      this.events = this.events.filter((ev) => ev.key !== key);
+    },
     today() {
       this.day = new Date().getDate();
       this.month = new Date().getMonth();
@@ -135,6 +160,7 @@ const app = Vue.createApp({
       this.minute = new Date().getMinutes();
     },
     notifyMe() {
+      console.log({ notification: Notification }, window.indexedDB);
       if (!("Notification" in window)) {
         alert("This browser does not support desktop notification");
       } else if (Notification.permission === "granted") {
@@ -147,5 +173,27 @@ const app = Vue.createApp({
         });
       }
     },
+  },
+  beforeUnmount() {
+    localStorage.setItem("events", JSON.stringify(this.events));
+    clearInterval(this.interval);
+  },
+  async mounted() {
+    
+    var prevEvents = localStorage.getItem("events");
+    if (prevEvents) {
+      this.events = prevEvents;
+    }
+    this.interval = setInterval(() => {
+      this.time = Intl.DateTimeFormat(navigator.language, {
+        hour: "numeric",
+        minute: "numeric",
+
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }).format();
+    }, 1000);
   },
 });

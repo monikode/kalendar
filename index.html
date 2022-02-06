@@ -35,6 +35,8 @@
       />
       <label>Dia</label>
       <h1>Calendar</h1>
+
+      <p>{{time}}</p>
       <button @click="today()">Today</button>
 
       <div class="month-container" v-if="vision=='month'">
@@ -78,8 +80,11 @@
         <div v-for="num in 24">{{num-1}}</div>
       </div>
       <button @click="notifyMe()">Notify me!</button>
+      <h2>Create Event</h2>
+      <button @click="createEvent()">Criar Evento</button>
     </div>
     <script src="https://unpkg.com/vue@next"></script>
+    <script src="js/indexedDB.js"></script>
     <script src="js/index.js"></script>
     <script>
       app.mount("#app");
