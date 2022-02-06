@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body class="light">
+    <div id="app">
+      <div>
+        <input type="checkbox" v-model="darkMode" />
+        <label for="">Dark Mode</label>
+      </div>
+      <input
+        type="checkbox"
+        value="month"
+        :checked="vision=='month'"
+        @input="vision = $event.target.value"
+      />
+      <label>Mês</label>
+      <input
+        type="checkbox"
+        value="week"
+        :checked="vision=='week'"
+        @input="vision = $event.target.value"
+      />
+      <label>Semana</label>
+      <input
+        type="checkbox"
+        value="day"
+        :checked="vision=='day'"
+        @input="vision = $event.target.value"
+      />
+      <label>Dia</label>
+      <h1>Calendar</h1>
+
+      <div class="month-container" v-if="vision=='month'">
+        <div
+          class="month-day last-month"
+          v-for="day in lastMonthEnd"
+          :key="day.date.toString()"
+        >
+          {{day.date.getDate()}}
+        </div>
+        <div
+          class="month-day"
+          v-for="day in currentMonth"
+          :key="day.date.toString()"
+        >
+          {{day.date.getDate()}}
+        </div>
+
+        <div
+          class="month-day next-month"
+          v-for="day in nextMonthStart"
+          :key="day.date.toString()"
+        >
+          {{day.date.getDate()}}
+        </div>
+        <button @click="month-=1">Anterior</button>
+        <button @click="month+=1">Proximo</button>
+      </div>
+      <div class="week-container" v-else-if="vision=='week'">
+        <div
+          class="week-day"
+          v-for="day in currentWeek"
+          :key="day.date.toString()"
+        >
+          {{day.date.getDate()}}
+        </div>
+        <button @click="day-=7">Anterior</button>
+        <button @click="day+=7">Proximo</button>
+      </div>
+      <div class="day-container" v-else-if="vision=='day'">
+        <div v-for="num in 24">{{num-1}}</div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="js/index.js"></script>
+    <script>
+      app.mount("#app");
+    </script>
+  </body>
+</html>

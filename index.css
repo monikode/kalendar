@@ -1,0 +1,27 @@
+html {
+    --primary-color: wine;
+    --background-color: #fff;
+    --text-color: #0c0c0c;  
+}
+body {
+    transition: background-color .5s;
+}
+body.light {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+}
+
+body.dark{
+    background-color: #0c0c0c;
+    color: #fff;
+}
+
+.month-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto;
+}
+
+.last-month, .next-month {
+    opacity: 0.5;
+    
+}
