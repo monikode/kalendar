@@ -14,6 +14,10 @@ Style your own calendar according to your requirement
 - [ ] User can create event
 - [ ] User can edit event
 - [ ] User can delete event
+- [ ] User can delete event
+- [x] User can select a monthly view
+- [x] User can select a weekly view
+- [x] User can select a dayly view
 
 ## Bonus features
 
