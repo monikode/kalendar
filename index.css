@@ -28,6 +28,10 @@ body.dark {
   border: 1px solid #ddd;
   border-collapse: collapse;
 }
+
+.month-day {
+    overflow: hidden;
+}
 .last-month,
 .next-month {
   opacity: 0.5;

@@ -50,6 +50,11 @@
             :key="day.date.toString()"
           >
             {{day.date.getDate()}}
+            <div>
+                <div v-for="event in day.events">
+                    > {{event.title}}
+                </div>
+            </div>
           </div>
           <div
             class="month-day"
@@ -57,6 +62,11 @@
             :key="day.date.toString()"
           >
             {{day.date.getDate()}}
+            <div>
+                <div v-for="event in day.events"  @click="confirmDeleteEvent(event.key)">
+                    > {{event.title}}
+                </div>
+            </div>
           </div>
 
           <div

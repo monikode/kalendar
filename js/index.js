@@ -13,6 +13,7 @@ const app = Vue.createApp({
       time: null,
       events: [],
       event: {
+        type: "event",
         title: "",
         startDate: new Date().toISOString().substring(0, 10),
         endDate: new Date().toISOString().substring(0, 10),
@@ -83,12 +84,15 @@ const app = Vue.createApp({
       );
 
       for (var i = 1; i <= lastMonthDay.getDate(); i++) {
+        const date = new Date(
+          this.currentDate.getFullYear(),
+          this.currentDate.getMonth(),
+          i
+        );
+
         month.push({
-          date: new Date(
-            this.currentDate.getFullYear(),
-            this.currentDate.getMonth(),
-            i
-          ),
+          date,
+          events: this.getDayEvents(date),
         });
       }
 
@@ -136,7 +140,6 @@ const app = Vue.createApp({
           events: this.getDayEvents(date),
         });
       }
-      console.log(week);
       return week;
     },
   },
@@ -165,7 +168,6 @@ const app = Vue.createApp({
       this.events.forEach((element) => {
         let start = new Date(element.startDate + "T" + element.startTime);
         let end = new Date(element.endDate + "T" + element.endTime);
-        console.log(date);
         if (date >= start && date <= end) {
           events.push(element);
         }
@@ -177,7 +179,9 @@ const app = Vue.createApp({
         key: new Date().toISOString(),
         ...this.event,
       };
-      this.events = [...this.events, event];
+      createEvent(event, () => {
+        this.events = [...this.events, event];
+      });
     },
     updateEvent(key, event) {
       this.events = this.events.map((ev) => {
@@ -186,7 +190,10 @@ const app = Vue.createApp({
       });
     },
     deleteEvent(key) {
+      deleteEvent(key, () => {
       this.events = this.events.filter((ev) => ev.key !== key);
+        
+      });
     },
     today() {
       this.day = new Date().getDate();
@@ -196,7 +203,6 @@ const app = Vue.createApp({
       this.minute = new Date().getMinutes();
     },
     notifyMe() {
-      console.log({ notification: Notification }, window.indexedDB);
       if (!("Notification" in window)) {
         alert("This browser does not support desktop notification");
       } else if (Notification.permission === "granted") {
@@ -209,12 +215,22 @@ const app = Vue.createApp({
         });
       }
     },
+    confirmDeleteEvent(key){
+      const result = confirm("Deseja deletar esse evento?")
+      if(result){
+        this.deleteEvent(key)
+      }
+    }
   },
   beforeUnmount() {
     localStorage.setItem("events", JSON.stringify(this.events));
     clearInterval(this.interval);
   },
   async mounted() {
+    getEvents((res) => {
+      this.events = res;
+      console.log(this.events);
+    });
     var prevEvents = localStorage.getItem("events");
     if (prevEvents) {
       this.events = prevEvents;

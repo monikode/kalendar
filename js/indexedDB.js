@@ -5,16 +5,14 @@ const createEventStore = () => {
 
   request.onupgradeneeded = function (event) {
     var db = event.target.result;
-    console.log(db)
     db.createObjectStore("events", { keyPath: "key" });
-    console.log("ldfkldsm");
   };
   
   request.onerror = function () {
     console.log("erro");
   };
 };
-const createEvent = (newEvent) => {
+const createEvent = (newEvent, onSuccess) => {
   let request = indexedDB.open(DB_NAME, 1);
 
   request.onsuccess = function (event) {
@@ -23,22 +21,23 @@ const createEvent = (newEvent) => {
 
     transaction.oncomplete = function () {
       console.log("Transação finalizada com sucesso.");
-      var store = transaction.objectStore("events");
-      var addRequest = store.add(newEvent);
-      addRequest.onerror = function () {
-        console.log("Ocorreu um erro ao salvar o evento.");
-      };
-  
-      addRequest.onsuccess = function () {
-        console.log("Evento salvo com sucesso.");
-      };
+     
     };
 
     transaction.onerror = function (event) {
       console.log("Transação finalizada com erro. Erro: " + event.target.error);
     };
 
-   
+    var store = transaction.objectStore("events");
+    var addRequest = store.add(newEvent);
+    addRequest.onerror = function () {
+      console.log("Ocorreu um erro ao salvar o evento.");
+    };
+
+    addRequest.onsuccess = function () {
+      console.log("Evento salvo com sucesso.");
+      onSuccess()
+    }; 
   };
 };
 
@@ -48,15 +47,54 @@ const updateEvent = () => {
   request.onsuccess = function () {};
 };
 
-const deleteEvent = () => {
-  let request = indexedDB.open(DB_NAME, 1);
+const deleteEvent = (key, onSuccess) => {
+    let request = indexedDB.open(DB_NAME, 1);
 
-  request.onsuccess = function () {};
+    request.onsuccess = function (event) {
+      var db = event.target.result;
+      var transaction = db.transaction("events", "readwrite");
+  
+      transaction.oncomplete = function () {
+        console.log("Transação finalizada com sucesso.");
+       
+      };
+  
+      transaction.onerror = function (event) {
+        console.log("Transação finalizada com erro. Erro: " + event.target.error);
+      };
+  
+      var store = transaction.objectStore("events");
+      var deleteRequest = store.delete(key)
+      deleteRequest.onsuccess = function () {
+          onSuccess(deleteRequest.result)
+      }
+     
+    };
 };
-const getEvents = () => {
-  let request = indexedDB.open(DB_NAME, 1);
+const getEvents = (onSuccess) => {
+    let request = indexedDB.open(DB_NAME, 1);
 
-  request.onsuccess = function () {};
+    request.onsuccess = function (event) {
+      var db = event.target.result;
+      var transaction = db.transaction("events", "readwrite");
+  
+      transaction.oncomplete = function () {
+        console.log("Transação finalizada com sucesso.");
+       
+      };
+  
+      transaction.onerror = function (event) {
+        console.log("Transação finalizada com erro. Erro: " + event.target.error);
+      };
+  
+      var store = transaction.objectStore("events");
+      var listRequest = store.getAll()
+      listRequest.onsuccess = function () {
+          onSuccess(listRequest.result)
+      }
+  
+     
+    };
 };
 
 createEventStore();
