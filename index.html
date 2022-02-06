@@ -81,7 +81,23 @@
       </div>
       <button @click="notifyMe()">Notify me!</button>
       <h2>Create Event</h2>
-      <button @click="createEvent()">Criar Evento</button>
+      <div>
+        <input type="text" placeholder="Titulo" v-model="event.title"/><br />
+        <input
+          type="date"
+          placeholder=""
+          v-model="event.startDate"
+        />
+        <input
+          type="date"
+          placeholder=""
+          v-model="event.endDate"
+        /><br />
+        <input type="time" placeholder="" v-model="event.startTime" />
+        <input type="time" placeholder=""  v-model="event.endTime" /><br />
+        <textarea name="" id="" cols="30" rows="10" v-model="event.description"></textarea><br />
+        <button @click="createEvent()">Criar Evento</button>
+      </div>
     </div>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="js/indexedDB.js"></script>

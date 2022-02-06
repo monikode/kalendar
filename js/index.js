@@ -12,6 +12,14 @@ const app = Vue.createApp({
       interval: null,
       time: null,
       events: [],
+      event: {
+        title: "",
+        startDate: new Date().toISOString().substring(0, 10),
+        endDate: new Date().toISOString().substring(0, 10),
+        startTime: "00:00",
+        endTime: "23:59",
+        description: "",
+      },
     };
   },
   watch: {
@@ -117,31 +125,40 @@ const app = Vue.createApp({
     currentWeek() {
       var week = [];
       for (var i = 0; i < 7; i++) {
-        week.push({
-          date: new Date(
+        const date = new Date(
             this.currentDate.getFullYear(),
             this.currentDate.getMonth(),
             this.currentDate.getDate() - this.currentDate.getDay() - 1 + i
-          ),
+          )
+     
+        week.push({
+          date,
+          events: this.getDayEvents(date)
         });
       }
-      console.log(week, this.currentDate);
+      console.log(week)
       return week;
     },
   },
   methods: {
+    getDayEvents(date) {
+      let events = [];
+      this.events.forEach((element) => {
+        let start = new Date(element.startDate + "T" + element.startTime);
+        let end = new Date(element.endDate + "T" + element.endTime);
+        console.log(date);
+        if (date >= start && date <= end) {
+          events.push(element)
+        }
+      });
+      return events
+    },
     createEvent() {
       var event = {
-        key: new Date().toString(),
-        title: "",
-        startDate: {},
-        endDate: {},
-        startTime: {},
-        endTime: {},
-        description: "",
+        key: new Date().toISOString(),
+        ...this.event,
       };
-      this.events = [event, ...this.events];
-      createEvent(event)
+      this.events = [...this.events, event];
     },
     updateEvent(key, event) {
       this.events = this.events.map((ev) => {
@@ -179,7 +196,6 @@ const app = Vue.createApp({
     clearInterval(this.interval);
   },
   async mounted() {
-    
     var prevEvents = localStorage.getItem("events");
     if (prevEvents) {
       this.events = prevEvents;
