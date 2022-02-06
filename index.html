@@ -39,63 +39,88 @@
       <p>{{time}}</p>
       <button @click="today()">Today</button>
 
-      <div class="month-container" v-if="vision=='month'">
-        <div
-          class="month-day last-month"
-          v-for="day in lastMonthEnd"
-          :key="day.date.toString()"
-        >
-          {{day.date.getDate()}}
-        </div>
-        <div
-          class="month-day"
-          v-for="day in currentMonth"
-          :key="day.date.toString()"
-        >
-          {{day.date.getDate()}}
-        </div>
+      <div v-if="vision=='month'">
+        <div class="month-container">
+          <div v-for="num in 7">
+            <div>{{getWeekDay(num-1)}}</div>
+          </div>
+          <div
+            class="month-day last-month"
+            v-for="day in lastMonthEnd"
+            :key="day.date.toString()"
+          >
+            {{day.date.getDate()}}
+          </div>
+          <div
+            class="month-day"
+            v-for="day in currentMonth"
+            :key="day.date.toString()"
+          >
+            {{day.date.getDate()}}
+          </div>
 
-        <div
-          class="month-day next-month"
-          v-for="day in nextMonthStart"
-          :key="day.date.toString()"
-        >
-          {{day.date.getDate()}}
+          <div
+            class="month-day next-month"
+            v-for="day in nextMonthStart"
+            :key="day.date.toString()"
+          >
+            {{day.date.getDate()}}
+          </div>
         </div>
         <button @click="month-=1">Anterior</button>
+
         <button @click="month+=1">Proximo</button>
       </div>
+
       <div class="week-container" v-else-if="vision=='week'">
-        <div
-          class="week-day"
-          v-for="day in currentWeek"
-          :key="day.date.toString()"
-        >
-          {{day.date.getDate()}}
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <td></td>
+              <td class="arrow"></td>
+              <td v-for="day in currentWeek" class="is-border-bottom is-border-left" :key="day.date.toString()">
+                <h6>{{getWeekDay(day.date.getDay())}}</h6>
+                {{day.date.getDate()}}
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="num in 24" :key="num">
+              <td>{{num-1}}</td>
+              <td class="arrow is-border-bottom"></td>
+              <td v-for="d in 7" class="is-border-bottom is-border-left"></td>
+            </tr>
+          </tbody>
+        </table>
         <button @click="day-=7">Anterior</button>
         <button @click="day+=7">Proximo</button>
       </div>
-      <div class="day-container" v-else-if="vision=='day'">
-        <div v-for="num in 24">{{num-1}}</div>
+      <div v-else-if="vision=='day'">
+        <div class="day-container">
+          <template v-for="num in 24">
+            <div >{{num-1}}</div>
+            <div  class="is-border-bottom"></div>
+            <div  class="is-border-bottom  is-border-left"></div>
+          </template>
+        </div>
       </div>
+
       <button @click="notifyMe()">Notify me!</button>
       <h2>Create Event</h2>
       <div>
-        <input type="text" placeholder="Titulo" v-model="event.title"/><br />
-        <input
-          type="date"
-          placeholder=""
-          v-model="event.startDate"
-        />
-        <input
-          type="date"
-          placeholder=""
-          v-model="event.endDate"
-        /><br />
+        <input type="text" placeholder="Titulo" v-model="event.title" /><br />
+        <input type="date" placeholder="" v-model="event.startDate" />
+        <input type="date" placeholder="" v-model="event.endDate" /><br />
         <input type="time" placeholder="" v-model="event.startTime" />
-        <input type="time" placeholder=""  v-model="event.endTime" /><br />
-        <textarea name="" id="" cols="30" rows="10" v-model="event.description"></textarea><br />
+        <input type="time" placeholder="" v-model="event.endTime" /><br />
+        <textarea
+          name=""
+          id=""
+          cols="30"
+          rows="10"
+          v-model="event.description"
+        ></textarea
+        ><br />
         <button @click="createEvent()">Criar Evento</button>
       </div>
     </div>

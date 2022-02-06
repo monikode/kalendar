@@ -1,27 +1,79 @@
 html {
-    --primary-color: wine;
-    --background-color: #fff;
-    --text-color: #0c0c0c;  
+  --primary-color: wine;
+  --background-color: #fff;
+  --text-color: #0c0c0c;
 }
 body {
-    transition: background-color .5s;
+  transition: background-color 0.5s;
 }
 body.light {
-    background-color: var(--background-color);
-    color: var(--primary-color);
+  background-color: var(--background-color);
+  color: var(--primary-color);
 }
 
-body.dark{
-    background-color: #0c0c0c;
-    color: #fff;
+body.dark {
+  background-color: #0c0c0c;
+  color: #fff;
 }
 
 .month-container {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  grid-template-rows: 40px repeat(5, 200px);
 }
 
-.last-month, .next-month {
-    opacity: 0.5;
-    
+.month-container > * {
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+.last-month,
+.next-month {
+  opacity: 0.5;
+}
+
+.day-container {
+  display: grid;
+  grid-template-columns: 50px 10px auto;
+  width: 100%;
+  grid-template-rows: repeat(25, 50px);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+td {
+  height: 30px;
+  text-align: center;
+  vertical-align: center;
+}
+
+.arrow {
+    width: 10px;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.is-border-bottom {
+  border-bottom: 1px solid #ddd;
+}
+
+.is-border-left {
+  border-left: 1px solid #ddd;
 }

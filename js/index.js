@@ -126,21 +126,40 @@ const app = Vue.createApp({
       var week = [];
       for (var i = 0; i < 7; i++) {
         const date = new Date(
-            this.currentDate.getFullYear(),
-            this.currentDate.getMonth(),
-            this.currentDate.getDate() - this.currentDate.getDay() - 1 + i
-          )
-     
+          this.currentDate.getFullYear(),
+          this.currentDate.getMonth(),
+          this.currentDate.getDate() - this.currentDate.getDay() + i
+        );
+
         week.push({
           date,
-          events: this.getDayEvents(date)
+          events: this.getDayEvents(date),
         });
       }
-      console.log(week)
+      console.log(week);
       return week;
     },
   },
   methods: {
+    getWeekDay(num) {
+      switch (num) {
+        case 0:
+          return "Sunday";
+        case 1:
+          return "Monday";
+        case 2:
+          return "Tuesday";
+        case 3:
+          return "Wednesday";
+        case 4:
+          return "Thursday";
+        case 5:
+          return "Friday";
+        case 6:
+          return "Saturday";
+      }
+    },
+
     getDayEvents(date) {
       let events = [];
       this.events.forEach((element) => {
@@ -148,10 +167,10 @@ const app = Vue.createApp({
         let end = new Date(element.endDate + "T" + element.endTime);
         console.log(date);
         if (date >= start && date <= end) {
-          events.push(element)
+          events.push(element);
         }
       });
-      return events
+      return events;
     },
     createEvent() {
       var event = {
