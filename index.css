@@ -1,40 +1,139 @@
-html {
-  --primary-color: wine;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  --primary-color: #5e4076;
+  --primary-color-90: #f6f1f7;
   --background-color: #fff;
   --text-color: #0c0c0c;
+
+  --navbar-height: 80px;
+  --sidebar-width-open: 250px;
+  height: 100%;
+  width: 100%;
+  font-family: "Poppins", Roboto, sans-serif;
+}
+
+:root.dark-theme {
+  --primary-color: #a17dbf;
+  --primary-color-90: #312f31;
+  --background-color: #0c0c0c;
+  --text-color: #ffffff;
 }
 body {
   transition: background-color 0.5s;
-}
-body.light {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
   background-color: var(--background-color);
-  color: var(--primary-color);
+  color: var(--text-color);
 }
 
-body.dark {
-  background-color: #0c0c0c;
-  color: #fff;
+#app {
+  height: 100%;
+  display: flex;
+}
+
+#navbar {
+  box-sizing: border-box;
+  height: var(--navbar-height);
+  width: 100%;
+  padding: 10px 20px;
+}
+
+#navbar .title {
+    font-weight: bold;
+font-size: 20px;
+line-height: 36px;
+/* identical to box height */
+
+letter-spacing: 0.135em;
+text-transform: uppercase;
+
+}
+#wrapper {
+  flex: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+#container {
+  width: 100%;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .month-container {
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto;
+  grid-template-columns: repeat(7, 1fr);
   border-collapse: collapse;
-  border: 1px solid #ddd;
-  grid-template-rows: 40px repeat(5, 200px);
+  grid-template-rows: 20px repeat(6, 1fr);
+  height: calc(100% - 4px);
 }
 
-.month-container > * {
-  border: 1px solid #ddd;
-  border-collapse: collapse;
+.month-container .week-day {
+  box-sizing: border-box;
+  padding: 0 15px;
+  text-transform: uppercase;
+  font-size: 10px;
+  opacity: 50%;
 }
 
 .month-day {
-    overflow: hidden;
+  box-sizing: border-box;
+  padding: 5px;
+  width: 100%;
+  overflow: hidden;
 }
-.last-month,
-.next-month {
-  opacity: 0.5;
+
+.month-day .wrapper {
+  height: 100%;
+  padding: 0 10px;
+}
+
+.month-day .wrapper.current {
+  background-color: var(--primary-color-90);
+  color: var(--primary-color);
+}
+
+.month-day .line {
+  background-color: var(--text-color);
+  height: 3px;
+  width: 100%;
+}
+.month-day .current .line {
+  background-color: var(--primary-color);
+}
+
+.month-day .secondary-month {
+  opacity: 40%;
+}
+.month-day .day {
+  font-size: 24px;
+  padding-top: 15px;
+  font-weight: 600;
+  letter-spacing: -2.5px;
+}
+
+.month-day .events {
+}
+
+.month-day .events ul {
+  list-style: none;
+  text-align: start;
+  padding: 0;
+
+  margin: 0;
+}
+
+.month-day .events li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: start;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .day-container {
@@ -59,7 +158,7 @@ td {
 }
 
 .arrow {
-    width: 10px;
+  width: 10px;
 }
 
 .slide-fade-enter-active {
@@ -80,4 +179,60 @@ td {
 
 .is-border-left {
   border-left: 1px solid #ddd;
+}
+
+.is-weight-600 {
+  font-weight: 600;
+}
+
+.is-weight-bold {
+  font-weight: bold;
+}
+
+/* ************SIDEBAR*************** */
+#sidebar {
+  width: var(--sidebar-width-open);
+  box-sizing: border-box;
+  padding: 10px 25px;
+}
+
+.vision-group > div {
+  display: flex;
+  padding: 10px 20px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.vision-group .selected {
+  color: var(--primary-color);
+  background-color: var(--primary-color-90);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background-color: var(--primary-color);
+  color: #fff;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  font-family: "Poppins", "Roboto", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(146, 146, 146);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #6f6f6f;
 }

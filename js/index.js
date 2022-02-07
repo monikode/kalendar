@@ -23,8 +23,16 @@ const app = Vue.createApp({
       },
     };
   },
+
   watch: {
     darkMode() {
+      const activeTheme = localStorage.getItem("user-theme");
+      if (activeTheme === "light-theme") {
+        this.setTheme("dark-theme");
+      } else {
+        this.setTheme("light-theme");
+      }
+      
       var element = document.body;
       element.classList.toggle("dark");
       element.classList.toggle("light");
@@ -46,86 +54,7 @@ const app = Vue.createApp({
       this.minute = date.getMinutes();
       return date;
     },
-    lastMonthEnd() {
-      var month = [];
-      const firstMonthDay = new Date(
-        this.currentDate.getFullYear(),
-        this.currentDate.getMonth(),
-        1
-      ).getDay();
-      const lastMonth = new Date(
-        this.currentDate.getFullYear(),
-        this.currentDate.getMonth(),
-        -firstMonthDay + 1
-      );
 
-      for (
-        var i = lastMonth.getDate();
-        i < lastMonth.getDate() + firstMonthDay;
-        i++
-      ) {
-        month.push({
-          date: new Date(
-            this.currentDate.getFullYear(),
-            this.currentDate.getMonth() - 1,
-            i
-          ),
-        });
-      }
-
-      return month;
-    },
-    currentMonth() {
-      var month = [];
-      const lastMonthDay = new Date(
-        this.currentDate.getFullYear(),
-        this.currentDate.getMonth() + 1,
-        0
-      );
-
-      for (var i = 1; i <= lastMonthDay.getDate(); i++) {
-        const date = new Date(
-          this.currentDate.getFullYear(),
-          this.currentDate.getMonth(),
-          i
-        );
-
-        month.push({
-          date,
-          events: this.getDayEvents(date),
-        });
-      }
-
-      return month;
-    },
-    nextMonthStart() {
-      var month = [];
-      const lastMonthDay = new Date(
-        this.currentDate.getFullYear(),
-        this.currentDate.getMonth() + 1,
-        0
-      ).getDay();
-      const nextMonth = new Date(
-        this.currentDate.getFullYear(),
-        this.currentDate.getMonth(),
-        6 - lastMonthDay
-      );
-
-      if (lastMonthDay == 6) {
-        return [];
-      } else {
-        for (var i = 1; i <= nextMonth.getDate(); i++) {
-          month.push({
-            date: new Date(
-              this.currentDate.getFullYear(),
-              this.currentDate.getMonth() + 1,
-              i
-            ),
-          });
-        }
-        return month;
-      }
-    },
     currentWeek() {
       var week = [];
       for (var i = 0; i < 7; i++) {
@@ -144,6 +73,37 @@ const app = Vue.createApp({
     },
   },
   methods: {
+    setTheme(theme) {
+      localStorage.setItem("user-theme", theme);
+      this.userTheme = theme;
+      document.documentElement.className = theme;
+    },
+    next() {
+      switch (this.vision) {
+        case "month":
+          this.month += 1;
+          break;
+        case "week":
+          this.day += 7;
+          break;
+        case "day":
+          this.day += 1;
+          break;
+      }
+    },
+    previous() {
+      switch (this.vision) {
+        case "month":
+          this.month -= 1;
+          break;
+        case "week":
+          this.day -= 7;
+          break;
+        case "day":
+          this.day -= 1;
+          break;
+      }
+    },
     getWeekDay(num) {
       switch (num) {
         case 0:
@@ -162,7 +122,12 @@ const app = Vue.createApp({
           return "Saturday";
       }
     },
-
+    getDay(date) {
+      return {
+        date, 
+        events: this.getDayEvents(date)
+      }
+    },
     getDayEvents(date) {
       let events = [];
       this.events.forEach((element) => {
@@ -191,8 +156,7 @@ const app = Vue.createApp({
     },
     deleteEvent(key) {
       deleteEvent(key, () => {
-      this.events = this.events.filter((ev) => ev.key !== key);
-        
+        this.events = this.events.filter((ev) => ev.key !== key);
       });
     },
     today() {
@@ -215,12 +179,12 @@ const app = Vue.createApp({
         });
       }
     },
-    confirmDeleteEvent(key){
-      const result = confirm("Deseja deletar esse evento?")
-      if(result){
-        this.deleteEvent(key)
+    confirmDeleteEvent(key) {
+      const result = confirm("Deseja deletar esse evento?");
+      if (result) {
+        this.deleteEvent(key);
       }
-    }
+    },
   },
   beforeUnmount() {
     localStorage.setItem("events", JSON.stringify(this.events));

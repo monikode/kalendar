@@ -9,134 +9,122 @@
   </head>
   <body class="light">
     <div id="app">
-      <div>
-        <input type="checkbox" v-model="darkMode" />
-        <label for="">Dark Mode</label>
+        <sidebar></sidebar>
+      <div id="sidebar" v-show="false">
+        <h1>Calendar</h1>
+
+        <input
+          type="checkbox"
+          value="month"
+          :checked="vision=='month'"
+          @input="vision = $event.target.value"
+        />
+        <label>Mês</label>
+        <input
+          type="checkbox"
+          value="week"
+          :checked="vision=='week'"
+          @input="vision = $event.target.value"
+        />
+        <label>Semana</label>
+        <input
+          type="checkbox"
+          value="day"
+          :checked="vision=='day'"
+          @input="vision = $event.target.value"
+        />
+        <label>Dia</label>
+        <button @click="notifyMe()">Notify me!</button>
+
+        <h2>Create Event</h2>
+        <form @submit.prevent="createEvent()">
+          <input
+            type="text"
+            required
+            placeholder="Titulo"
+            v-model="event.title"
+          /><br />
+          <input type="date" placeholder="" v-model="event.startDate" />
+          <input type="date" placeholder="" v-model="event.endDate" /><br />
+          <input type="time" placeholder="" v-model="event.startTime" />
+          <input type="time" placeholder="" v-model="event.endTime" /><br />
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="10"
+            v-model="event.description"
+          ></textarea
+          ><br />
+          <button type="submit">Criar Evento</button>
+        </form>
       </div>
-      <input
-        type="checkbox"
-        value="month"
-        :checked="vision=='month'"
-        @input="vision = $event.target.value"
-      />
-      <label>Mês</label>
-      <input
-        type="checkbox"
-        value="week"
-        :checked="vision=='week'"
-        @input="vision = $event.target.value"
-      />
-      <label>Semana</label>
-      <input
-        type="checkbox"
-        value="day"
-        :checked="vision=='day'"
-        @input="vision = $event.target.value"
-      />
-      <label>Dia</label>
-      <h1>Calendar</h1>
+      <div id="wrapper" v-cloak>
+          <navbar></navbar>
+        <div id="navbar" v-show="false">
+          <div>
+            <button @click="previous()">Anterior</button>
+            <button @click="next()">Proximo</button>
+            <button @click="today()">Today</button>
 
-      <p>{{time}}</p>
-      <button @click="today()">Today</button>
-
-      <div v-if="vision=='month'">
-        <div class="month-container">
-          <div v-for="num in 7">
-            <div>{{getWeekDay(num-1)}}</div>
-          </div>
-          <div
-            class="month-day last-month"
-            v-for="day in lastMonthEnd"
-            :key="day.date.toString()"
-          >
-            {{day.date.getDate()}}
-            <div>
-                <div v-for="event in day.events">
-                    > {{event.title}}
-                </div>
-            </div>
-          </div>
-          <div
-            class="month-day"
-            v-for="day in currentMonth"
-            :key="day.date.toString()"
-          >
-            {{day.date.getDate()}}
-            <div>
-                <div v-for="event in day.events"  @click="confirmDeleteEvent(event.key)">
-                    > {{event.title}}
-                </div>
-            </div>
-          </div>
-
-          <div
-            class="month-day next-month"
-            v-for="day in nextMonthStart"
-            :key="day.date.toString()"
-          >
-            {{day.date.getDate()}}
+            <input type="checkbox" v-model="darkMode" />
+            <label for="">Dark Mode</label>
           </div>
         </div>
-        <button @click="month-=1">Anterior</button>
+        <div id="container">
+          <template v-if="vision=='month'">
+            <month-view></month-view>
+          </template>
 
-        <button @click="month+=1">Proximo</button>
-      </div>
-
-      <div class="week-container" v-else-if="vision=='week'">
-        <table>
-          <thead>
-            <tr>
-              <td></td>
-              <td class="arrow"></td>
-              <td v-for="day in currentWeek" class="is-border-bottom is-border-left" :key="day.date.toString()">
-                <h6>{{getWeekDay(day.date.getDay())}}</h6>
-                {{day.date.getDate()}}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="num in 24" :key="num">
-              <td>{{num-1}}</td>
-              <td class="arrow is-border-bottom"></td>
-              <td v-for="d in 7" class="is-border-bottom is-border-left"></td>
-            </tr>
-          </tbody>
-        </table>
-        <button @click="day-=7">Anterior</button>
-        <button @click="day+=7">Proximo</button>
-      </div>
-      <div v-else-if="vision=='day'">
-        <div class="day-container">
-          <template v-for="num in 24">
-            <div >{{num-1}}</div>
-            <div  class="is-border-bottom"></div>
-            <div  class="is-border-bottom  is-border-left"></div>
+          <template class="week-container" v-else-if="vision=='week'">
+            <table>
+              <thead>
+                <tr>
+                  <td></td>
+                  <td class="arrow"></td>
+                  <td
+                    v-for="day in currentWeek"
+                    class="is-border-bottom is-border-left"
+                    :key="day.date.toString()"
+                  >
+                    <h6>{{getWeekDay(day.date.getDay())}}</h6>
+                    {{day.date.getDate()}}
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="num in 24" :key="num">
+                  <td>{{num-1}}</td>
+                  <td class="arrow is-border-bottom"></td>
+                  <td
+                    v-for="d in 7"
+                    class="is-border-bottom is-border-left"
+                  ></td>
+                </tr>
+              </tbody>
+            </table>
+          </template>
+          <template v-else-if="vision=='day'">
+            <div class="day-container">
+              <template v-for="num in 24">
+                <div>{{num-1}}</div>
+                <div class="is-border-bottom"></div>
+                <div class="is-border-bottom is-border-left"></div>
+              </template>
+            </div>
           </template>
         </div>
       </div>
-
-      <button @click="notifyMe()">Notify me!</button>
-      <h2>Create Event</h2>
-      <div>
-        <input type="text" placeholder="Titulo" v-model="event.title" /><br />
-        <input type="date" placeholder="" v-model="event.startDate" />
-        <input type="date" placeholder="" v-model="event.endDate" /><br />
-        <input type="time" placeholder="" v-model="event.startTime" />
-        <input type="time" placeholder="" v-model="event.endTime" /><br />
-        <textarea
-          name=""
-          id=""
-          cols="30"
-          rows="10"
-          v-model="event.description"
-        ></textarea
-        ><br />
-        <button @click="createEvent()">Criar Evento</button>
-      </div>
     </div>
+    <script src="https://code.iconify.design/2/2.1.2/iconify.min.js"></script>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="js/indexedDB.js"></script>
     <script src="js/index.js"></script>
+    <script src="js/components/popUpTemplate.js"></script>
+    <script src="js/components/sidebar.js"></script>
+    <script src="js/components/navbar.js"></script>
+    <script src="js/components/monthView.js"></script>
+
     <script>
       app.mount("#app");
     </script>
